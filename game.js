@@ -353,6 +353,30 @@ class Game2048 {
         this.hideMessage();
     }
 
+    handleSwipe(startX, startY, endX, endY) {
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+        const minSwipeDistance = 30;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            if (Math.abs(deltaX) > minSwipeDistance) {
+                if (deltaX > 0) {
+                    this.move('right');
+                } else {
+                    this.move('left');
+                }
+            }
+        } else {
+            if (Math.abs(deltaY) > minSwipeDistance) {
+                if (deltaY > 0) {
+                    this.move('down');
+                } else {
+                    this.move('up');
+                }
+            }
+        }
+    }
+
     setupEventListeners() {
         // Keyboard controls
         document.addEventListener('keydown', (e) => {
@@ -374,8 +398,6 @@ class Game2048 {
         // Touch controls for mobile
         let touchStartX = 0;
         let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
 
         const gameContainer = document.querySelector('.game-container');
         
@@ -385,9 +407,9 @@ class Game2048 {
         });
 
         gameContainer.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            this.handleSwipe();
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            this.handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
         });
 
         // Button controls
@@ -402,30 +424,6 @@ class Game2048 {
         document.getElementById('undo-btn').addEventListener('click', () => {
             this.undo();
         });
-
-        this.handleSwipe = () => {
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            const minSwipeDistance = 30;
-
-            if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (Math.abs(deltaX) > minSwipeDistance) {
-                    if (deltaX > 0) {
-                        this.move('right');
-                    } else {
-                        this.move('left');
-                    }
-                }
-            } else {
-                if (Math.abs(deltaY) > minSwipeDistance) {
-                    if (deltaY > 0) {
-                        this.move('down');
-                    } else {
-                        this.move('up');
-                    }
-                }
-            }
-        };
     }
 }
 
